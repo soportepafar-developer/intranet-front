@@ -31,7 +31,6 @@ export class AddEventModal implements OnInit {
   public tipoEvento: string = '';
   public cliente: string = '';
   public clienteOtro: string = '';
-  public proveedor: string = '';
 
   get selectedParticipantIds(): number[] {
     return this.selectedParticipantsList.map(u => u.id);
@@ -153,13 +152,6 @@ export class AddEventModal implements OnInit {
         }
       }
       
-      let prov = this.eventToEdit.proveedor || '';
-      if (!prov && this.eventToEdit.tags) {
-        const provTag = this.eventToEdit.tags.find(t => t.startsWith('proveedor:'));
-        if (provTag) prov = provTag.substring(10);
-      }
-      this.proveedor = prov;
-      
       // El color del evento ahora se determina estrictamente por la categoría
       
       this.participants = this.eventToEdit.participants || [];
@@ -236,10 +228,6 @@ export class AddEventModal implements OnInit {
       'mantenimiento': '#ff9800'
     };
     tagsArray.push(colorMap[this.tipoEvento] || '#9e9e9e');
-
-    if (this.tipoEvento === 'mantenimiento' && this.proveedor && this.proveedor.trim()) {
-      tagsArray.push('proveedor:' + this.proveedor.trim());
-    }
 
     const eventData: Evento = {
       title: this.title,

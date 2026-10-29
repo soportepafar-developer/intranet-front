@@ -121,24 +121,16 @@
         }
       }
 
-      <!-- Ubicación y Proveedor para Mantenimiento -->
+      <!-- Ubicación para Mantenimiento -->
       @if (tipoEvento === 'mantenimiento') {
         <div class="gcal-row">
           <div class="gcal-icon-col">
             <i class="fa-solid fa-location-dot"></i>
           </div>
           <div class="gcal-content-col">
-            <div class="gcal-split-row">
-              <div class="gcal-split-item">
-                <app-custom-dropdown [options]="salaOptions" [selectedValue]="place" label="Agregar ubicación"
-                  [showClearOption]="true" [dropup]="true" (valueChange)="place = $event">
-                </app-custom-dropdown>
-              </div>
-              <div class="gcal-split-item">
-                <input type="text" [(ngModel)]="proveedor" class="gcal-date-input"
-                  style="width: 100%; border-bottom: 1px solid #dadce0; margin-top: 5px; height: 35px; padding-left: 8px;" placeholder="Proveedor" />
-              </div>
-            </div>
+            <app-custom-dropdown [options]="salaOptions" [selectedValue]="place" label="Agregar ubicación"
+              [showClearOption]="true" [dropup]="true" (valueChange)="place = $event">
+            </app-custom-dropdown>
           </div>
         </div>
       }
