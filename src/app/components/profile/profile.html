@@ -1,38 +1,42 @@
 <div class="admin-page">
   <div class="page-header">
     <div class="breadcrumb">
-      <span class="root">Perfil</span>
+      <span class="root"><i class="fa-solid fa-id-badge"></i> Mi Perfil</span>
       <span class="separator">/</span>
-      <span class="current">Usuario</span>
+      <span class="current">Cuenta de Usuario</span>
     </div>
   </div>
 
   <div class="content-card profile-main-card">
     @if (mensajeEstado) {
       <div class="success-toast">
-        <i class="fa-solid fa-circle-check"></i> {{ mensajeEstado }}
+        <i class="fa-solid fa-circle-check"></i>
+        <span>{{ mensajeEstado }}</span>
       </div>
     }
 
     @if (loading) {
       <div class="loading-state">
         <i class="fa-solid fa-circle-notch fa-spin"></i>
-        <p>Cargando perfil...</p>
+        <p>Cargando información del perfil...</p>
       </div>
     } @else if (user) {
       <div class="profile-layout">
+        <!-- Sidebar Perfil -->
         <div class="profile-sidebar">
           <div class="avatar-container">
             @if (previewImageUrl) {
               <img [src]="previewImageUrl" alt="Foto de Perfil" class="profile-img">
             } @else {
               <div class="profile-placeholder">
-                <i class="fa-solid fa-user"></i>
+                <span class="initials-avatar">
+                  {{ (user.nombre?.[0] || 'U') + (user.apellido?.[0] || '') }}
+                </span>
               </div>
             }
             @if (modoEdicion) {
               <div class="avatar-overlay">
-                <label for="profileImageInput">
+                <label for="profileImageInput" title="Cambiar foto de perfil">
                   <i class="fa-solid fa-camera"></i>
                 </label>
                 <input id="profileImageInput" type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
@@ -41,63 +45,117 @@
           </div>
 
           <div class="user-main-info">
-            <h2>{{ tempUser.nombre | titlecase }} {{ tempUser.apellido | titlecase }}</h2>
-            <p>{{ tempUser.email }}</p>
+            <h2>{{ (tempUser.nombre || user.nombre) | titlecase }} {{ (tempUser.apellido || user.apellido) | titlecase }}</h2>
+            <p class="user-email-text">{{ tempUser.email || user.email }}</p>
+
+            <div class="user-badges-row">
+              <span class="role-chip" [ngClass]="user.role">
+                <i class="fa-solid" [ngClass]="{
+                  'fa-crown': user.role === 'superadmin',
+                  'fa-shield-halved': user.role === 'admin',
+                  'fa-box': user.role === 'logistics',
+                  'fa-user': user.role === 'regular'
+                }"></i>
+                {{ user.role === 'superadmin' ? 'Super Admin' : user.role === 'admin' ? 'Administrador' : user.role === 'logistics' ? 'Logística' : 'Regular' }}
+              </span>
+
+              <span class="status-pill active">
+                <span class="status-dot"></span>
+                Activo
+              </span>
+            </div>
           </div>
 
           @if (!modoEdicion) {
-            <button class="action-btn edit-btn" (click)="activarEdicion()">
+            <button class="btn btn-primary edit-profile-trigger" (click)="activarEdicion()">
               <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
             </button>
           }
         </div>
 
+        <!-- Contenido Principal -->
         <div class="profile-content">
           @if (modoEdicion) {
             <div class="edit-section">
-              <h3><i class="fa-solid fa-address-card"></i> Detalles de Usuario</h3>
+              <div class="section-header">
+                <h3><i class="fa-solid fa-address-card"></i> Información Personal</h3>
+                <span class="section-sub">Actualiza tus nombres y datos de contacto</span>
+              </div>
 
               <form (ngSubmit)="guardarPerfil()" #profileForm="ngForm" class="modern-form">
                 <div class="form-grid">
                   <div class="form-group">
-                    <label>Nombre</label>
-                    <div class="input-wrapper">
+                    <label>Nombre <span class="required">*</span></label>
+                    <div class="input-with-icon">
                       <i class="fa-solid fa-user"></i>
-                      <input type="text" [(ngModel)]="tempUser.nombre" name="nombre" required>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="tempUser.nombre" 
+                        name="nombre" 
+                        required 
+                        class="form-control"
+                        placeholder="Tu nombre">
                     </div>
                   </div>
+
                   <div class="form-group">
-                    <label>Apellido</label>
-                    <div class="input-wrapper">
+                    <label>Apellido <span class="required">*</span></label>
+                    <div class="input-with-icon">
                       <i class="fa-solid fa-user"></i>
-                      <input type="text" [(ngModel)]="tempUser.apellido" name="apellido" required>
+                      <input 
+                        type="text" 
+                        [(ngModel)]="tempUser.apellido" 
+                        name="apellido" 
+                        required 
+                        class="form-control"
+                        placeholder="Tu apellido">
                     </div>
                   </div>
+
                   <div class="form-group full-width">
-                    <label>Correo Electrónico</label>
-                    <div class="input-wrapper">
+                    <label>Correo Electrónico <span class="required">*</span></label>
+                    <div class="input-with-icon">
                       <i class="fa-solid fa-envelope"></i>
-                      <input type="email" [(ngModel)]="tempUser.email" name="email" required>
+                      <input 
+                        type="email" 
+                        [(ngModel)]="tempUser.email" 
+                        name="email" 
+                        required 
+                        class="form-control"
+                        placeholder="correo@ejemplo.com">
                     </div>
                   </div>
                 </div>
 
                 <div class="form-actions">
-                  <button type="button" class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
-                  <button type="submit" class="btn-save" [disabled]="!profileForm.valid">Guardar Cambios</button>
+                  <button type="button" class="btn btn-cancel" (click)="cancelarEdicion()">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary" [disabled]="!profileForm.valid">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                  </button>
                 </div>
               </form>
 
               <div class="divider"></div>
 
-              <h3><i class="fa-solid fa-lock"></i> Seguridad</h3>
+              <div class="section-header">
+                <h3><i class="fa-solid fa-shield-halved"></i> Seguridad y Acceso</h3>
+                <span class="section-sub">Actualiza tu contraseña para mantener protegida tu cuenta</span>
+              </div>
+
               <form (ngSubmit)="cambiarContrasena()" #passwordForm="ngForm" class="modern-form">
                 <div class="form-grid">
                   <div class="form-group full-width">
                     <label>Contraseña Actual</label>
-                    <div class="input-wrapper">
+                    <div class="input-with-icon">
                       <i class="fa-solid fa-lock-open"></i>
-                      <input [type]="showCurrentPassword ? 'text' : 'password'" [(ngModel)]="currentPassword" name="currentPassword" placeholder="Ingresa tu contraseña para validar el cambio">
+                      <input 
+                        [type]="showCurrentPassword ? 'text' : 'password'" 
+                        [(ngModel)]="currentPassword" 
+                        name="currentPassword" 
+                        class="form-control"
+                        placeholder="Ingresa tu contraseña actual para validar">
                       @if (currentPassword) {
                         <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility('current')" title="Mostrar/Ocultar contraseña">
                           <i class="fa-solid" [ngClass]="showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -108,9 +166,14 @@
 
                   <div class="form-group">
                     <label>Nueva Contraseña</label>
-                    <div class="input-wrapper">
+                    <div class="input-with-icon">
                       <i class="fa-solid fa-key"></i>
-                      <input [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="newPassword" name="newPassword" placeholder="Mínimo 6 caracteres">
+                      <input 
+                        [type]="showNewPassword ? 'text' : 'password'" 
+                        [(ngModel)]="newPassword" 
+                        name="newPassword" 
+                        class="form-control"
+                        placeholder="Mínimo 6 caracteres">
                       @if (newPassword) {
                         <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility('new')" title="Mostrar/Ocultar contraseña">
                           <i class="fa-solid" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -120,10 +183,15 @@
                   </div>
 
                   <div class="form-group">
-                    <label>Confirmar Contraseña</label>
-                    <div class="input-wrapper">
-                      <i class="fa-solid fa-shield-halved"></i>
-                      <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Repite la contraseña">
+                    <label>Confirmar Nueva Contraseña</label>
+                    <div class="input-with-icon">
+                      <i class="fa-solid fa-shield-check"></i>
+                      <input 
+                        [type]="showConfirmPassword ? 'text' : 'password'" 
+                        [(ngModel)]="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-control"
+                        placeholder="Repite la nueva contraseña">
                       @if (confirmPassword) {
                         <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility('confirm')" title="Mostrar/Ocultar contraseña">
                           <i class="fa-solid" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -134,44 +202,99 @@
                 </div>
 
                 @if (passwordError) {
-                  <div class="error-text" style="color: #ef4444; font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 1rem; font-style: italic;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> {{ passwordError }}
+                  <div class="error-text">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ passwordError }}
                   </div>
                 }
 
                 <div class="form-actions">
-                  <button type="submit" class="btn-password" [disabled]="!passwordForm.valid">Actualizar Contraseña</button>
+                  <button type="submit" class="btn btn-secondary" [disabled]="!passwordForm.valid || !currentPassword || !newPassword">
+                    <i class="fa-solid fa-key"></i> Actualizar Contraseña
+                  </button>
                 </div>
               </form>
             </div>
           } @else {
             <div class="view-section">
-              <div class="info-card">
-                <div class="info-item">
-                  <span class="label">Nombre Completo</span>
-                  <span class="value">{{ user.nombre }} {{ user.apellido }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">Correo Electrónico</span>
-                  <span class="value">{{ user.email }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">Rol en el Sistema</span>
-                  <div class="value">
-                    <span class="role-chip" [ngClass]="user.role">
-                      <i class="fa-solid" [ngClass]="{
-                        'fa-crown': user.role === 'superadmin',
-                        'fa-shield-halved': user.role === 'admin',
-                        'fa-box': user.role === 'logistics',
-                        'fa-user': user.role === 'regular'
-                      }"></i>
-                      {{ user.role === 'superadmin' ? 'Super Admin' : user.role === 'admin' ? 'Administrador' : user.role === 'logistics' ? 'Logística' : 'Regular' }}
-                    </span>
+              <div class="section-header">
+                <h3><i class="fa-solid fa-circle-user"></i> Resumen de Cuenta</h3>
+                <span class="section-sub">Detalles y parámetros de tu perfil en la Intranet</span>
+              </div>
+
+              <div class="info-grid">
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Nombre Completo</span>
+                    <span class="value">{{ user.nombre }} {{ user.apellido }}</span>
                   </div>
                 </div>
-                <div class="info-item">
-                  <span class="label">Estado de la Cuenta</span>
-                  <span class="value status-active">Activo</span>
+
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-envelope"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Correo Electrónico</span>
+                    <span class="value">{{ user.email }}</span>
+                  </div>
+                </div>
+
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-user-shield"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Rol en el Sistema</span>
+                    <div class="value">
+                      <span class="role-chip" [ngClass]="user.role">
+                        <i class="fa-solid" [ngClass]="{
+                          'fa-crown': user.role === 'superadmin',
+                          'fa-shield-halved': user.role === 'admin',
+                          'fa-box': user.role === 'logistics',
+                          'fa-user': user.role === 'regular'
+                        }"></i>
+                        {{ user.role === 'superadmin' ? 'Super Admin' : user.role === 'admin' ? 'Administrador' : user.role === 'logistics' ? 'Logística' : 'Regular' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-shield-heart"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Estado de Cuenta</span>
+                    <div class="value">
+                      <span class="status-pill active">
+                        <span class="status-dot"></span>
+                        Cuenta Activa
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-building"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Empresa / Sede</span>
+                    <span class="value">{{ user.empresa || 'JPL Principal' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-card-item">
+                  <div class="info-item-icon">
+                    <i class="fa-solid fa-id-card"></i>
+                  </div>
+                  <div class="info-item-content">
+                    <span class="label">Identificador</span>
+                    <span class="value mono">#{{ user.id || 'N/A' }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -182,6 +305,9 @@
       <div class="error-state">
         <i class="fa-solid fa-triangle-exclamation"></i>
         <p>No se pudieron cargar los datos del perfil.</p>
+        <button class="btn btn-primary" (click)="cargarDatosUsuario()">
+          <i class="fa-solid fa-rotate-right"></i> Reintentar
+        </button>
       </div>
     }
   </div>

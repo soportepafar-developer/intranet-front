@@ -1,36 +1,83 @@
 <div class="admin-page">
   <div class="page-header">
     <div class="breadcrumb">
-      <span class="root">Usuarios</span>
+      <span class="root" routerLink="/user/users" style="cursor: pointer;">
+        <i class="fa-solid fa-users-gear"></i> Usuarios
+      </span>
       <span class="separator">/</span>
       <span class="current">{{ tituloPagina }}</span>
     </div>
   </div>
 
   <div class="content-card">
+    <div class="card-header-bar">
+      <div class="card-icon-title">
+        <div class="header-icon-circle">
+          <i class="fa-solid" [ngClass]="modoEdicion ? 'fa-user-pen' : 'fa-user-plus'"></i>
+        </div>
+        <div>
+          <h2>{{ modoEdicion ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}</h2>
+          <p class="subtitle">{{ modoEdicion ? 'Modifica los datos y asignaciones del usuario' : 'Ingresa los datos para registrar un nuevo integrante' }}</p>
+        </div>
+      </div>
+    </div>
+
     <form (submit)="onSubmit()" #userForm="ngForm" class="modern-form">
       <div class="form-grid">
         <div class="form-group">
-          <label>Nombre *</label>
-          <input type="text" name="nombre" [(ngModel)]="userData.nombre" required placeholder="Nombre" class="form-control">
+          <label>Nombre <span class="required">*</span></label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-user"></i>
+            <input 
+              type="text" 
+              name="nombre" 
+              [(ngModel)]="userData.nombre" 
+              required 
+              placeholder="Ej. Juan" 
+              class="form-control">
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Apellido *</label>
-          <input type="text" name="apellido" [(ngModel)]="userData.apellido" required placeholder="Apellido" class="form-control">
+          <label>Apellido <span class="required">*</span></label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-user"></i>
+            <input 
+              type="text" 
+              name="apellido" 
+              [(ngModel)]="userData.apellido" 
+              required 
+              placeholder="Ej. Pérez" 
+              class="form-control">
+          </div>
         </div>
+
         <div class="form-group full-width">
-          <label>Correo Electrónico *</label>
-          <input type="email" name="email" [(ngModel)]="userData.email" required placeholder="correo@ejemplo.com" class="form-control">
+          <label>Correo Electrónico <span class="required">*</span></label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-envelope"></i>
+            <input 
+              type="email" 
+              name="email" 
+              [(ngModel)]="userData.email" 
+              required 
+              placeholder="correo@ejemplo.com" 
+              class="form-control">
+          </div>
         </div>
 
         @if (isAdmin) {
           <div class="form-group">
-            <label>{{ modoEdicion ? 'Cambiar Contraseña' : 'Contraseña *' }}</label>
+            <label>{{ modoEdicion ? 'Nueva Contraseña' : 'Contraseña *' }}</label>
             <div class="input-with-icon">
               <i class="fa-solid fa-lock"></i>
-              <input [type]="showPassword ? 'text' : 'password'" name="nuevaPassword" [(ngModel)]="userData.nuevaPassword"
-                [placeholder]="modoEdicion ? 'Opcional (Dejar en blanco para no cambiar)' : 'Contraseña inicial'"
-                minlength="6" class="form-control">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                name="nuevaPassword" 
+                [(ngModel)]="userData.nuevaPassword"
+                [placeholder]="modoEdicion ? 'Opcional (Dejar en blanco)' : 'Mínimo 6 caracteres'"
+                minlength="6" 
+                class="form-control">
               @if (userData.nuevaPassword) {
                 <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility('new')" title="Mostrar/Ocultar contraseña">
                   <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -38,18 +85,21 @@
               }
             </div>
             <span class="field-hint">
-              Mínimo 6 caracteres. {{ modoEdicion ? 'Al cambiarla, se le solicitará al usuario actualizarla al iniciar sesión.' : '' }}
+              Mínimo 6 caracteres. {{ modoEdicion ? 'Si la cambias, el usuario deberá actualizarla al ingresar.' : '' }}
             </span>
           </div>
-        }
 
-        @if (isAdmin) {
           <div class="form-group">
             <label>{{ modoEdicion ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña *' }}</label>
             <div class="input-with-icon">
               <i class="fa-solid fa-shield-halved"></i>
-              <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmarPassword" [(ngModel)]="userData.confirmarPassword"
-                [class.invalid-field]="userData.nuevaPassword !== userData.confirmarPassword && userData.confirmarPassword.length > 0" class="form-control">
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'" 
+                name="confirmarPassword" 
+                [(ngModel)]="userData.confirmarPassword"
+                [class.invalid-field]="userData.nuevaPassword !== userData.confirmarPassword && userData.confirmarPassword.length > 0" 
+                placeholder="Repite la contraseña"
+                class="form-control">
               @if (userData.confirmarPassword) {
                 <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility('confirm')" title="Mostrar/Ocultar contraseña">
                   <i class="fa-solid" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -57,9 +107,8 @@
               }
             </div>
             @if (userData.nuevaPassword !== userData.confirmarPassword && userData.confirmarPassword.length > 0) {
-              <span class="error-text"
-                >
-                Las contraseñas no coinciden
+              <span class="error-text">
+                <i class="fa-solid fa-circle-exclamation"></i> Las contraseñas no coinciden
               </span>
             }
           </div>
@@ -67,50 +116,105 @@
       </div>
 
       <div class="roles-section">
-        <label class="section-title">Roles</label>
-        <div class="radio-group">
+        <label class="section-title">
+          <i class="fa-solid fa-user-gear"></i> Rol en el Sistema
+        </label>
+        
+        <div class="role-cards-grid">
           @if (isSuperAdmin) {
-            <label class="radio-label">
+            <label class="role-select-card" [class.selected]="userData.role === 'superadmin'">
               <input type="radio" name="role" value="superadmin" [(ngModel)]="userData.role">
-              <span class="radio-custom"></span> Super Admin
+              <div class="role-card-inner">
+                <div class="role-card-icon superadmin">
+                  <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="role-card-info">
+                  <div class="role-card-title">Super Admin</div>
+                  <div class="role-card-desc">Control total del sistema y configuración</div>
+                </div>
+                <div class="check-indicator">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+              </div>
             </label>
           }
-          <label class="radio-label">
+
+          <label class="role-select-card" [class.selected]="userData.role === 'admin'" [class.disabled]="!isAdmin">
             <input type="radio" name="role" value="admin" [(ngModel)]="userData.role" [disabled]="!isAdmin">
-            <span class="radio-custom"></span> Administrador
+            <div class="role-card-inner">
+              <div class="role-card-icon admin">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div class="role-card-info">
+                <div class="role-card-title">Administrador</div>
+                <div class="role-card-desc">Gestión de usuarios, tareas y reportes</div>
+              </div>
+              <div class="check-indicator">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
           </label>
-          <label class="radio-label">
-            <input type="radio" name="role" value="regular" [(ngModel)]="userData.role">
-            <span class="radio-custom"></span> Regular
-          </label>
-          <label class="radio-label">
+
+          <label class="role-select-card" [class.selected]="userData.role === 'logistics'">
             <input type="radio" name="role" value="logistics" [(ngModel)]="userData.role">
-            <span class="radio-custom"></span> Logística
+            <div class="role-card-inner">
+              <div class="role-card-icon logistics">
+                <i class="fa-solid fa-box"></i>
+              </div>
+              <div class="role-card-info">
+                <div class="role-card-title">Logística</div>
+                <div class="role-card-desc">Gestión de inventario y artículos</div>
+              </div>
+              <div class="check-indicator">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
+          </label>
+
+          <label class="role-select-card" [class.selected]="userData.role === 'regular'">
+            <input type="radio" name="role" value="regular" [(ngModel)]="userData.role">
+            <div class="role-card-inner">
+              <div class="role-card-icon regular">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div class="role-card-info">
+                <div class="role-card-title">Regular</div>
+                <div class="role-card-desc">Participación en tablero y chat interno</div>
+              </div>
+              <div class="check-indicator">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
           </label>
         </div>
-
       </div>
+
       <div class="form-actions">
         <button type="button" class="btn btn-cancel" routerLink="/user/users">
-          Regresar <i class="fa-solid fa-house"></i>
+          <i class="fa-solid fa-arrow-left"></i> Regresar
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="!userForm.form.valid">
-          Guardar <i class="fa-solid fa-floppy-disk"></i>
+          <i class="fa-solid fa-floppy-disk"></i> {{ modoEdicion ? 'Guardar Cambios' : 'Crear Usuario' }}
         </button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Modal de Éxito -->
+<!-- Modal de Éxito Modernizado y Centrado -->
 @if (showSuccessModal) {
-  <div class="confirm-modal-backdrop" (click)="onCloseSuccess()"></div>
-  <div class="confirm-modal-content">
-    <h4>{{ modoEdicion ? '¡Usuario Actualizado!' : '¡Usuario Creado!' }}</h4>
-    <p>{{ modoEdicion ? 'El usuario ha sido actualizado exitosamente.' : 'El nuevo usuario ha sido registrado exitosamente
-    en el sistema.' }}</p>
-    <div class="modal-actions">
-      <button class="btn btn-success" (click)="onCloseSuccess()">Aceptar</button>
+  <div class="modern-modal-backdrop" (click)="onCloseSuccess()">
+    <div class="modern-modal" (click)="$event.stopPropagation()">
+      <div class="modal-icon-container success">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h3>{{ modoEdicion ? '¡Usuario Actualizado!' : '¡Usuario Creado!' }}</h3>
+      <p>{{ modoEdicion ? 'El usuario ha sido actualizado exitosamente.' : 'El nuevo usuario ha sido registrado exitosamente en el sistema.' }}</p>
+      <div class="modern-modal-actions" style="width: 100%; justify-content: center;">
+        <button class="btn btn-primary" (click)="onCloseSuccess()" style="min-width: 140px;">
+          Aceptar
+        </button>
+      </div>
     </div>
   </div>
 }

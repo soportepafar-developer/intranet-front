@@ -21,7 +21,7 @@
 }
 
 .breadcrumb .root {
-  color: #6366f1;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -158,9 +158,9 @@
 }
 
 .modern-input:focus {
-  border-color: #6366f1;
+  border-color: var(--primary-color);
   background: white;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 .form-custom-select ::ng-deep .custom-btn {
@@ -181,7 +181,7 @@
 
 .form-custom-select ::ng-deep .custom-btn:hover {
   background: white !important;
-  border-color: #6366f1 !important;
+  border-color: var(--primary-color) !important;
 }
 
 .form-custom-select ::ng-deep .custom-menu {
@@ -190,9 +190,9 @@
 
 .input-wrapper input:focus,
 .input-wrapper select:focus {
-  border-color: #6366f1;
+  border-color: var(--primary-color);
   background: white;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 .form-actions {
@@ -222,14 +222,16 @@
 }
 
 .action-btn.save {
-  background: #4338ca;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #4338ca 100%);
   color: white;
   border: none;
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 .action-btn.save:disabled {
   background: #cbd5e1;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .action-btn:hover:not(:disabled) {
@@ -238,7 +240,8 @@
 }
 
 .action-btn.save:hover:not(:disabled) {
-  background: #3730a3;
+  background: linear-gradient(135deg, var(--primary-hover) 0%, #3730a3 100%);
+  box-shadow: 0 6px 16px var(--primary-glow);
 }
 
 @media (max-width: 768px) {

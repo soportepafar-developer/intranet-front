@@ -63,6 +63,36 @@ export class Sidebar implements OnInit {
     return this.authService.isAdmin() || this.authService.isLogistics();
   }
 
+  get currentUser(): any {
+    return this.authService.getUserProfile();
+  }
+
+  get userDisplayName(): string {
+    const u = this.currentUser;
+    if (!u) return 'Usuario';
+    const name = u.nombre || u.name || '';
+    const surname = u.apellido || u.surname || '';
+    const fullName = `${name} ${surname}`.trim();
+    return fullName || u.email?.split('@')[0] || 'Usuario';
+  }
+
+  get userRoleLabel(): string {
+    if (this.isAdmin) return 'Administrador';
+    if (this.authService.isLogistics()) return 'Logística';
+    return 'Miembro';
+  }
+
+  get userInitials(): string {
+    const u = this.currentUser;
+    if (!u) return 'U';
+    const n = (u.nombre || u.name || '').trim();
+    const a = (u.apellido || u.surname || '').trim();
+    if (n && a) return `${n[0]}${a[0]}`.toUpperCase();
+    if (n) return n.slice(0, 2).toUpperCase();
+    if (u.email) return u.email.slice(0, 2).toUpperCase();
+    return 'U';
+  }
+
   onLogout(): void {
     this.authService.logout();
   }

@@ -2,122 +2,139 @@
 
   <div class="sidebar-header" [ngClass]="{'collapsed-header': isCollapsed}">
     @if (!isCollapsed) {
-      <a routerLink="/board" class="logo">
-        <img src="img/logo_uvi.png" alt="Uvi Logo" style="height: 38px; width: auto; object-fit: contain; margin-top: -10px;">
+      <a routerLink="/board" class="logo" title="Ir al Tablero">
+        <img src="img/logo_uvi.png" alt="Uvi Logo" class="logo-img">
+      </a>
+    } @else {
+      <a routerLink="/board" class="logo-collapsed" title="Ir al Tablero">
+        <span class="logo-dot"></span>
       </a>
     }
-    <button class="toggle-btn" (click)="onToggleSidebar()" [title]="isCollapsed ? 'Expandir' : 'Colapsar'">
+    <button class="toggle-btn" (click)="onToggleSidebar()" [title]="isCollapsed ? 'Expandir barra lateral' : 'Colapsar barra lateral'">
       <i class="fa-solid" [ngClass]="{'fa-chevron-left': !isCollapsed, 'fa-chevron-right': isCollapsed}"></i>
     </button>
   </div>
 
   <ul class="nav-links">
     @if (isAdmin) {
-      <span class="section-title">Admin</span>
+      <li class="section-item">
+        <span class="section-title">Admin</span>
+      </li>
       <li>
-        <a routerLink="/user/users" routerLinkActive="active" (click)="closeOnMobile()">
+        <a routerLink="/user/users" routerLinkActive="active" (click)="closeOnMobile()" [title]="isCollapsed ? 'Usuarios' : ''">
           <i class="fa-solid fa-users-gear"></i>
           @if (!isCollapsed) { <span>Usuarios</span> }
         </a>
       </li>
     }
 
-    <!-- <li>
-    <a routerLink="/p" routerLinkActive="active">
-      <i class="fa-solid fa-home"></i>
-      @if (!isCollapsed) { <span>inicio</span> }
-    </a>
-  </li> -->
-
-  <span class="section-title">Modulos</span>
-  <li>
-    <a routerLink="/board" routerLinkActive="active" (click)="closeOnMobile()">
-      <i class="fa-solid fa-table-columns"></i>
-      @if (!isCollapsed) { <span>Tablero</span> }
-    </a>
-  </li>
-
-  <li>
-    <a routerLink="/calendar" routerLinkActive="active" (click)="closeOnMobile()">
-      <i class="fa-regular fa-calendar"></i>
-      @if (!isCollapsed) { <span>Calendario</span> }
-    </a>
-  </li>
-
-  <li>
-    <a routerLink="/chat" routerLinkActive="active" (click)="closeOnMobile()" style="position: relative;">
-      <i class="fa-solid fa-comments"></i>
-      @if (!isCollapsed) {
-        <span style="flex-grow: 1;">Chat</span>
-        @if (unreadChatCount > 0) {
-          <div class="sidebar-badge">{{ unreadChatCount }}</div>
-        }
-      } @else {
-        @if (unreadChatCount > 0) {
-          <div class="sidebar-badge-collapsed">{{ unreadChatCount > 99 ? '99+' : unreadChatCount }}</div>
-        }
-      }
-    </a>
-  </li>
-
-  @if (canViewInventory) {
+    <li class="section-item">
+      <span class="section-title">Módulos</span>
+    </li>
     <li>
-      <a routerLink="/articles" routerLinkActive="active" (click)="closeOnMobile()">
-        <i class="fa-solid fa-box"></i>
-        @if (!isCollapsed) { <span>Inventario</span> }
+      <a routerLink="/board" routerLinkActive="active" (click)="closeOnMobile()" [title]="isCollapsed ? 'Tablero' : ''">
+        <i class="fa-solid fa-table-columns"></i>
+        @if (!isCollapsed) { <span>Tablero</span> }
       </a>
     </li>
 
     <li>
-      <a [routerLink]="['/articles']" [queryParams]="{ scan: 'true' }" (click)="closeOnMobile()">
-        <i class="fa-solid fa-camera"></i>
-        @if (!isCollapsed) { <span>Escanear</span> }
+      <a routerLink="/calendar" routerLinkActive="active" (click)="closeOnMobile()" [title]="isCollapsed ? 'Calendario' : ''">
+        <i class="fa-regular fa-calendar"></i>
+        @if (!isCollapsed) { <span>Calendario</span> }
       </a>
     </li>
-  }
 
-  <!-- <li>
-  <a routerLink="/transcriptor" routerLinkActive="active">
-    <i class="fa-solid fa-microphone-lines"></i>
-    <span>Transcriptor</span>
-  </a>
-</li> -->
+    <li>
+      <a routerLink="/chat" routerLinkActive="active" (click)="closeOnMobile()" class="nav-item-chat" [title]="isCollapsed ? 'Chat' : ''">
+        <i class="fa-solid fa-comments"></i>
+        @if (!isCollapsed) {
+          <span class="nav-label">Chat</span>
+          @if (unreadChatCount > 0) {
+            <span class="sidebar-badge">{{ unreadChatCount }}</span>
+          }
+        } @else {
+          @if (unreadChatCount > 0) {
+            <span class="sidebar-badge-collapsed">{{ unreadChatCount > 99 ? '99+' : unreadChatCount }}</span>
+          }
+        }
+      </a>
+    </li>
 
-<span class="section-title">Utilitarios</span>
-<li>
-  <a href="https://ug.link/pafarcloud" target="_blank">
-    <i class="fa-solid fa-server"></i>
-    @if (!isCollapsed) { <span>Nas</span> }
-  </a>
-</li>
+    @if (canViewInventory) {
+      <li>
+        <a routerLink="/articles" routerLinkActive="active" (click)="closeOnMobile()" [title]="isCollapsed ? 'Inventario' : ''">
+          <i class="fa-solid fa-box"></i>
+          @if (!isCollapsed) { <span>Inventario</span> }
+        </a>
+      </li>
 
-<li>
-  <a (click)="onOpenWebmail()" style="cursor: pointer;">
-    @if (isWebmailLoading) {
-      <i class="fa-solid fa-circle-notch fa-spin"></i>
-    } @else {
-      <i class="fa-solid fa-envelope"></i>
+      <li>
+        <a [routerLink]="['/articles']" [queryParams]="{ scan: 'true' }" (click)="closeOnMobile()" [title]="isCollapsed ? 'Escanear QR/Código' : ''">
+          <i class="fa-solid fa-camera"></i>
+          @if (!isCollapsed) { <span>Escanear</span> }
+        </a>
+      </li>
     }
-    @if (!isCollapsed) { <span>WebMail</span> }
-  </a>
-</li>
 
-<li>
-  <a href="https://enlacesmultiples.pafar.com.ve/universodesoluciones/" target="_blank">
-    <i class="fa-solid fa-link"></i>
-    @if (!isCollapsed) { <span>Universo de Soluciones</span> }
-  </a>
-</li>
-</ul>
+    <li class="section-item">
+      <span class="section-title">Utilitarios</span>
+    </li>
+    <li>
+      <a href="https://ug.link/pafarcloud" target="_blank" rel="noopener noreferrer" [title]="isCollapsed ? 'Almacenamiento Nas' : ''">
+        <i class="fa-solid fa-server"></i>
+        @if (!isCollapsed) { <span>Nas</span> }
+      </a>
+    </li>
 
-<div class="sidebar-footer">
-  <a routerLink="/profile" routerLinkActive="active" class="profile-btn" (click)="closeOnMobile()">
-    <i class="fa-solid fa-user"></i>
-    @if (!isCollapsed) { <span>Perfil</span>}
-  </a>
-  <button class="logout-btn" (click)="onLogout()">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    @if (!isCollapsed) { <span>Cerrar Sesión</span> }
-  </button>
-</div>
+    <li>
+      <a (click)="onOpenWebmail()" style="cursor: pointer;" [title]="isCollapsed ? 'WebMail' : ''">
+        @if (isWebmailLoading) {
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+        } @else {
+          <i class="fa-solid fa-envelope"></i>
+        }
+        @if (!isCollapsed) { <span>WebMail</span> }
+      </a>
+    </li>
+
+    <li>
+      <a href="https://enlacesmultiples.pafar.com.ve/universodesoluciones/" target="_blank" rel="noopener noreferrer" [title]="isCollapsed ? 'Universo de Soluciones' : ''">
+        <i class="fa-solid fa-link"></i>
+        @if (!isCollapsed) { <span>Universo de Soluciones</span> }
+      </a>
+    </li>
+  </ul>
+
+  <div class="sidebar-footer">
+    @if (!isCollapsed) {
+      <div class="user-card" routerLink="/profile" (click)="closeOnMobile()" title="Ver mi perfil">
+        <div class="user-avatar">
+          @if (currentUser?.foto) {
+            <img [src]="currentUser.foto" alt="Avatar" class="avatar-img">
+          } @else {
+            <span>{{ userInitials }}</span>
+          }
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ userDisplayName }}</span>
+          <span class="user-role">{{ userRoleLabel }}</span>
+        </div>
+        <i class="fa-solid fa-chevron-right user-arrow"></i>
+      </div>
+    } @else {
+      <a routerLink="/profile" class="user-avatar-collapsed" (click)="closeOnMobile()" [title]="'Perfil: ' + userDisplayName">
+        @if (currentUser?.foto) {
+          <img [src]="currentUser.foto" alt="Avatar" class="avatar-img">
+        } @else {
+          <span>{{ userInitials }}</span>
+        }
+      </a>
+    }
+
+    <button class="logout-btn" (click)="onLogout()" [title]="isCollapsed ? 'Cerrar Sesión' : ''">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      @if (!isCollapsed) { <span>Cerrar Sesión</span> }
+    </button>
+  </div>
 </nav>

@@ -1,13 +1,14 @@
 <div class="admin-page">
   <div class="page-header">
     <div class="breadcrumb">
-      <span class="root">Usuarios</span>
+      <span class="root"><i class="fa-solid fa-users-gear"></i> Usuarios</span>
       <span class="separator">/</span>
       <span class="current">Listado</span>
     </div>
     @if (isSuperAdmin) {
       <button class="new-user-btn" routerLink="/user/users/add">
-        <i class="fas fa-plus"></i> Nuevo Usuario
+        <i class="fas fa-plus"></i>
+        <span>Nuevo Usuario</span>
       </button>
     }
   </div>
@@ -16,7 +17,16 @@
     <div class="filters-bar">
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Buscar usuario..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
+        <input 
+          type="text" 
+          placeholder="Buscar por nombre o correo..." 
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="onSearchChange()">
+        @if (searchTerm) {
+          <button class="clear-search-btn" (click)="searchTerm = ''; onSearchChange()" title="Limpiar búsqueda">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        }
       </div>
       <div class="filter-dropdown">
         <app-custom-dropdown
@@ -39,31 +49,36 @@
           </tr>
         </thead>
         <tbody>
-          @for (user of paginatedUsers; track user) {
+          @for (user of paginatedUsers; track user.id) {
             <tr>
               <td class="user-cell">
-                <div class="user-info">
-                  <span class="user-name">{{ user.nombre }} {{ user.apellido }}</span>
-                  <span class="user-email">{{ user.email }}</span>
+                <div class="user-cell-content">
+                  <div class="user-avatar-pill">
+                    {{ (user.nombre?.[0] || 'U') + (user.apellido?.[0] || '') }}
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name" (click)="onViewDetails(user)">{{ user.nombre }} {{ user.apellido }}</span>
+                    <span class="user-email">{{ user.email }}</span>
+                  </div>
                 </div>
               </td>
               <td>
                 <div class="role-cell-wrapper">
                   <span class="role-chip" [ngClass]="user.role">
-                  <i class="fa-solid" [ngClass]="{
-                    'fa-crown': user.role === 'superadmin',
-                    'fa-shield-halved': user.role === 'admin',
-                    'fa-box': user.role === 'logistics',
-                    'fa-user': user.role === 'regular'
-                  }"></i>
+                    <i class="fa-solid" [ngClass]="{
+                      'fa-crown': user.role === 'superadmin',
+                      'fa-shield-halved': user.role === 'admin',
+                      'fa-box': user.role === 'logistics',
+                      'fa-user': user.role === 'regular'
+                    }"></i>
                     {{ user.role === 'superadmin' ? 'Super Admin' : user.role === 'admin' ? 'Administrador' : user.role === 'logistics' ? 'Logística' : 'Regular' }}
                   </span>
                 </div>
               </td>
               <td>
                 <div class="status-cell-wrapper">
-                  <span class="status-indicator">
-                    <span class="dot" [style.background]="user.estado === 'Activo' ? '#10b981' : '#ef4444'"></span>
+                  <span class="status-pill" [class.active]="user.estado === 'Activo'" [class.inactive]="user.estado !== 'Activo'">
+                    <span class="status-dot"></span>
                     {{ user.estado }}
                   </span>
                 </div>
@@ -71,15 +86,32 @@
               <td>
                 <div class="actions-cell-wrapper">
                   <div class="actions-cell">
+                    <button class="icon-btn view" title="Ver detalles" (click)="onViewDetails(user)">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
                     @if (canEdit(user)) {
-                      <button class="icon-btn edit" title="Editar" (click)="onEditUser(user.id)"><i class="fa-solid fa-pen-to-square"></i></button>
+                      <button class="icon-btn edit" title="Editar" (click)="onEditUser(user.id)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
                     }
                     @if (canDelete(user)) {
-                      <button class="icon-btn delete" [title]="user.estado === 'Activo' ? 'Eliminar (Desactivar)' : 'Activar'" (click)="onToggleActive(user.id)">
-                        <i class="fa-solid" [ngClass]="user.estado === 'Activo' ? 'fa-trash' : 'fa-rotate-left'"></i>
+                      <button class="icon-btn delete" [title]="user.estado === 'Activo' ? 'Desactivar usuario' : 'Activar usuario'" (click)="onToggleActive(user.id)">
+                        <i class="fa-solid" [ngClass]="user.estado === 'Activo' ? 'fa-user-slash' : 'fa-user-check'"></i>
                       </button>
                     }
                   </div>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty-table-cell">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <i class="fa-solid fa-users-slash"></i>
+                  </div>
+                  <h4>No se encontraron usuarios</h4>
+                  <p>Intenta ajustar los filtros o el término de búsqueda</p>
                 </div>
               </td>
             </tr>
@@ -102,52 +134,69 @@
 </div>
 
 <!-- Modal de Detalles de Usuario -->
-@if (showUserDetailsModal) {
+@if (showUserDetailsModal && selectedUser) {
   <div class="modern-modal-backdrop" (click)="onCloseDetails()">
     <div class="modern-modal details-modern-modal" (click)="$event.stopPropagation()">
-      <div class="modal-icon-container info">
-        <i class="fa-solid fa-user-gear"></i>
+      <div class="modal-header-row">
+        <div class="modal-user-avatar">
+          {{ (selectedUser.nombre?.[0] || 'U') + (selectedUser.apellido?.[0] || '') }}
+        </div>
+        <div class="modal-user-headline">
+          <h3>{{ selectedUser.nombre }} {{ selectedUser.apellido }}</h3>
+          <span class="user-id-badge">ID #{{ selectedUser.id }}</span>
+        </div>
+        <button class="modal-close-x" (click)="onCloseDetails()" title="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <h3>{{ selectedUser?.nombre }} {{ selectedUser?.apellido }}</h3>
-      <p>#{{ selectedUser?.id }}</p>
-      @if (selectedUser) {
-        <div class="details-body" style="width: 100%; text-align: left;">
-          <div class="detail-grid">
-            <div class="detail-item">
-              <span class="detail-label">Correo Electrónico</span>
-              <span class="detail-value">{{ selectedUser.email }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Rol de Usuario</span>
-              <span class="detail-value" style="text-transform: capitalize;">{{ selectedUser.role }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Empresa</span>
-              <span class="detail-value">{{ selectedUser.empresa || 'No asignada' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Fecha de Registro</span>
-              <span class="detail-value">{{ (selectedUser.createdAt) | date:'dd/MM/yyyy HH:mm' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Cargo / Departamento</span>
-              <span class="detail-value">{{ selectedUser.cargo || 'N/A' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Estado</span>
-              <span class="status-indicator" style="justify-content: flex-start;">
-                <span class="dot" [style.background]="selectedUser.estado === 'Activo' ? '#10b981' : '#ef4444'"></span>
-                {{ selectedUser.estado }}
+
+      <div class="details-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-envelope"></i> Correo Electrónico</span>
+            <span class="detail-value">{{ selectedUser.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-user-shield"></i> Rol de Usuario</span>
+            <span class="detail-value">
+              <span class="role-chip" [ngClass]="selectedUser.role">
+                <i class="fa-solid" [ngClass]="{
+                  'fa-crown': selectedUser.role === 'superadmin',
+                  'fa-shield-halved': selectedUser.role === 'admin',
+                  'fa-box': selectedUser.role === 'logistics',
+                  'fa-user': selectedUser.role === 'regular'
+                }"></i>
+                {{ selectedUser.role === 'superadmin' ? 'Super Admin' : selectedUser.role === 'admin' ? 'Administrador' : selectedUser.role === 'logistics' ? 'Logística' : 'Regular' }}
               </span>
-            </div>
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-building"></i> Empresa</span>
+            <span class="detail-value">{{ selectedUser.empresa || 'No asignada' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-briefcase"></i> Cargo / Depto</span>
+            <span class="detail-value">{{ selectedUser.cargo || 'Usuario' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-calendar"></i> Fecha de Registro</span>
+            <span class="detail-value">{{ (selectedUser.createdAt) | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label"><i class="fa-solid fa-signal"></i> Estado</span>
+            <span class="status-pill" [class.active]="selectedUser.estado === 'Activo'" [class.inactive]="selectedUser.estado !== 'Activo'">
+              <span class="status-dot"></span>
+              {{ selectedUser.estado }}
+            </span>
           </div>
         </div>
-      }
-      <div class="modern-modal-actions" style="margin-top: 20px;">
+      </div>
+
+      <div class="modern-modal-actions">
         <button class="btn btn-cancel" (click)="onCloseDetails()">Cerrar</button>
         @if (canEdit(selectedUser)) {
-          <button class="btn btn-primary" (click)="onEditUser(selectedUser!.id); onCloseDetails()">
-            <i class="fa-solid fa-user-pen"></i> Editar
+          <button class="btn btn-primary" (click)="onEditUser(selectedUser.id); onCloseDetails()">
+            <i class="fa-solid fa-user-pen"></i> Editar Usuario
           </button>
         }
       </div>

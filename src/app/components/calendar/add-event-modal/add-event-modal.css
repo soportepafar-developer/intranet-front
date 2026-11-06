@@ -1,4 +1,7 @@
 /* Estilos específicos para la Modal estilo Google Calendar */
+:host {
+  display: contents;
+}
 
 .gcal-modal-content {
   background: white;
