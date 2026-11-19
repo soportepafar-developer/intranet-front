@@ -1,0 +1,443 @@
+<div class="admin-page solicitudes-page">
+  <!-- CABECERA ESTILO INTRANET -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <span class="root">Gestión de Solicitudes</span>
+      <span class="separator">/</span>
+      <span class="current">Bandeja Centralizada</span>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="primary-action-btn" (click)="exportarCsv()">
+        <i class="fa-solid fa-download"></i>
+        <span>Exportar CSV</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 4 TARJETAS KPI -->
+  <section class="kpi-grid">
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div>
+          <span class="kpi-label">Total Solicitudes</span>
+          <div class="kpi-value">{{ kpis.total }}</div>
+          <span class="kpi-sub">
+            @if (kpis.alertasPlazo > 0) {
+              <span class="alert-pill">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                {{ kpis.alertasPlazo }} alerta(s) de plazo
+              </span>
+            } @else {
+              Sin alertas críticas
+            }
+          </span>
+        </div>
+        <div class="kpi-icon kpi-icon-primary">
+          <i class="fa-solid fa-inbox"></i>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div>
+          <span class="kpi-label">Clientes (Lead)</span>
+          <div class="kpi-value">{{ kpis.clientes }}</div>
+          <span class="kpi-sub">Plazo máx: 2 días</span>
+        </div>
+        <div class="kpi-icon kpi-icon-info">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div>
+          <span class="kpi-label">Formación</span>
+          <div class="kpi-value">{{ kpis.formacion }}</div>
+          <span class="kpi-sub">Plazo máx: 2 días</span>
+        </div>
+        <div class="kpi-icon kpi-icon-success">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div>
+          <span class="kpi-label">Postulaciones CV</span>
+          <div class="kpi-value">{{ kpis.cv }}</div>
+          <span class="kpi-sub">Plazo máx: 3 días</span>
+        </div>
+        <div class="kpi-icon kpi-icon-warning">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+      </div>
+    </mat-card>
+  </section>
+
+  <!-- CONTENEDOR PRINCIPAL ESTILO CONTENT-CARD -->
+  <div class="content-card solicitudes-content-card">
+    <div class="filters-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+          placeholder="Buscar por nombre, correo o ID..."
+          aria-label="Buscar solicitudes"
+        />
+        @if (searchTerm) {
+          <button
+            type="button"
+            class="clear-btn"
+            (click)="searchTerm = ''; onSearchChange()"
+            title="Limpiar búsqueda"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        }
+      </div>
+
+      @if (activeTabIndex === 0) {
+        <div class="filter-dropdowns">
+          <div class="filter-dropdown">
+            <app-custom-dropdown
+              [options]="clasificacionOptions"
+              [selectedValue]="clienteClasificacionFilter"
+              label="Clasificación"
+              icon="fa-tag"
+              [showClearOption]="true"
+              (valueChange)="clienteClasificacionFilter = $event; onSearchChange()"
+            ></app-custom-dropdown>
+          </div>
+
+          <div class="filter-dropdown">
+            <app-custom-dropdown
+              [options]="canalOptions"
+              [selectedValue]="canalFilter"
+              label="Todos los canales"
+              icon="fa-share-nodes"
+              [showClearOption]="true"
+              (valueChange)="canalFilter = $event; onSearchChange()"
+            ></app-custom-dropdown>
+          </div>
+        </div>
+      }
+    </div>
+
+    <mat-tab-group
+      [(selectedIndex)]="activeTabIndex"
+      animationDuration="150ms"
+      class="intranet-tabs"
+    >
+      <!-- PESTAÑA 1: CLIENTES (LEAD) -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-user-tie tab-icon"></i>
+          <span>Clientes (Lead)</span>
+          <span class="tab-count">{{ clientesFiltrados.length }}</span>
+        </ng-template>
+
+        <div class="tab-panel">
+          <div class="table-wrapper">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>ID / CANAL</th>
+                  <th>CLIENTE / SOLICITANTE</th>
+                  <th>TIPO CLIENTE</th>
+                  <th>ASUNTO / MENSAJE</th>
+                  <th>TIEMPO RESTANTE</th>
+                  <th>ESTADO</th>
+                  <th class="text-right">ACCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (s of clientesPaginados; track s.id) {
+                  @let sla = getSla(s);
+                  <tr>
+                    <td>
+                      <div class="mono-id">{{ s.id }}</div>
+                      <div class="cell-sub">{{ s.canal }}</div>
+                    </td>
+                    <td>
+                      <div class="person-cell">
+                        <div class="avatar">{{ getInitials(s.nombre) }}</div>
+                        <div>
+                          <div class="person-name">{{ s.nombre }}</div>
+                          <div class="cell-sub">{{ s.email }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span
+                          class="badge-tipo"
+                          [class.badge-lead]="s.cliente === 'Lead / Prospecto'"
+                          [class.badge-existente]="s.cliente === 'Cliente Existente'"
+                        >
+                          {{ s.cliente }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="asunto-title">{{ s.tipo }}</div>
+                      <div class="cell-sub truncate-msg" [matTooltip]="s.mensaje">
+                        {{ s.mensaje }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="sla-badge" [ngClass]="'sla-' + sla.nivel">
+                          {{ sla.texto }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="estado-pill">{{ s.estado }}</span>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <button
+                        type="button"
+                        class="table-action-btn"
+                        (click)="abrirDetalle(s)"
+                      >
+                        Ver Ficha
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            @if (clientesFiltrados.length === 0) {
+              <div class="empty-state">
+                No se encontraron solicitudes de clientes con los filtros actuales.
+              </div>
+            }
+          </div>
+
+          <div class="pagination-container">
+            <mat-paginator
+              (page)="onClientesPageChange($event)"
+              [length]="clientesFiltrados.length"
+              [pageSize]="clientesPageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              [pageIndex]="clientesPageIndex"
+              aria-label="Seleccionar página de clientes"
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- PESTAÑA 2: FORMACIÓN -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-graduation-cap tab-icon"></i>
+          <span>Formación</span>
+          <span class="tab-count">{{ formacionFiltrada.length }}</span>
+        </ng-template>
+
+        <div class="tab-panel">
+          <div class="table-wrapper">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>ID / CANAL</th>
+                  <th>SOLICITANTE</th>
+                  <th>CONSULTA</th>
+                  <th>REMITENTE OFICIAL</th>
+                  <th>TIEMPO RESTANTE</th>
+                  <th>ESTADO</th>
+                  <th class="text-right">ACCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (s of formacionPaginada; track s.id) {
+                  @let sla = getSla(s);
+                  <tr>
+                    <td>
+                      <div class="mono-id">{{ s.id }}</div>
+                      <div class="cell-sub">{{ s.canal }}</div>
+                    </td>
+                    <td>
+                      <div class="person-cell">
+                        <div class="avatar">{{ getInitials(s.nombre) }}</div>
+                        <div>
+                          <div class="person-name">{{ s.nombre }}</div>
+                          <div class="cell-sub">{{ s.cliente }} · {{ s.email }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="truncate-msg" [matTooltip]="s.mensaje">
+                        {{ s.mensaje }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <code class="sender-code">{{ s.remitente }}</code>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="sla-badge" [ngClass]="'sla-' + sla.nivel">
+                          {{ sla.texto }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="estado-pill">{{ s.estado }}</span>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <button
+                        type="button"
+                        class="table-action-btn"
+                        (click)="abrirDetalle(s)"
+                      >
+                        Responder
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            @if (formacionFiltrada.length === 0) {
+              <div class="empty-state">
+                No hay consultas de formación que coincidan con la búsqueda.
+              </div>
+            }
+          </div>
+
+          <div class="pagination-container">
+            <mat-paginator
+              (page)="onFormacionPageChange($event)"
+              [length]="formacionFiltrada.length"
+              [pageSize]="formacionPageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              [pageIndex]="formacionPageIndex"
+              aria-label="Seleccionar página de formación"
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- PESTAÑA 3: POSTULACIONES CV -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-file-pdf tab-icon"></i>
+          <span>CV</span>
+          <span class="tab-count">{{ cvFiltrados.length }}</span>
+        </ng-template>
+
+        <div class="tab-panel">
+          <div class="table-wrapper">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>ID / CANAL</th>
+                  <th>CANDIDATO</th>
+                  <th>PERFIL / EXPERIENCIA</th>
+                  <th>ARCHIVO CV</th>
+                  <th>TIEMPO RESTANTE</th>
+                  <th>ESTADO</th>
+                  <th class="text-right">ACCIÓN</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (s of cvPaginados; track s.id) {
+                  @let sla = getSla(s);
+                  <tr>
+                    <td>
+                      <div class="mono-id">{{ s.id }}</div>
+                      <div class="cell-sub">{{ s.canal }}</div>
+                    </td>
+                    <td>
+                      <div class="person-cell">
+                        <div class="avatar">{{ getInitials(s.nombre) }}</div>
+                        <div>
+                          <div class="person-name">{{ s.nombre }}</div>
+                          <div class="cell-sub">{{ s.email }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      @if (s.cv) {
+                        <div class="asunto-title">{{ s.cv.profesion }}</div>
+                        <div class="cell-sub truncate-msg" [matTooltip]="s.cv.experiencia">
+                          {{ s.cv.experiencia }}
+                        </div>
+                      } @else {
+                        <div class="cell-sub">{{ s.tipo }}</div>
+                      }
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        @if (s.cv) {
+                          <span class="file-chip">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            {{ s.cv.archivo }}
+                          </span>
+                        } @else {
+                          <span class="cell-sub">Sin adjunto</span>
+                        }
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="sla-badge" [ngClass]="'sla-' + sla.nivel">
+                          {{ sla.texto }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="center-cell">
+                        <span class="estado-pill">{{ s.estado }}</span>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <button
+                        type="button"
+                        class="table-action-btn"
+                        (click)="abrirDetalle(s)"
+                      >
+                        Abrir Ficha y CV
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            @if (cvFiltrados.length === 0) {
+              <div class="empty-state">
+                No hay postulaciones CV que coincidan con la búsqueda.
+              </div>
+            }
+          </div>
+
+          <div class="pagination-container">
+            <mat-paginator
+              (page)="onCvPageChange($event)"
+              [length]="cvFiltrados.length"
+              [pageSize]="cvPageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              [pageIndex]="cvPageIndex"
+              aria-label="Seleccionar página de postulaciones CV"
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
