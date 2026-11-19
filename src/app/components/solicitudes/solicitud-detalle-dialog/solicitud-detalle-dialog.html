@@ -1,0 +1,179 @@
+<div class="dialog-shell">
+  <!-- CABECERA DEL MODAL -->
+  <header class="dialog-header">
+    <div class="header-left">
+      <div class="avatar-lg">{{ initials }}</div>
+      <div>
+        <div class="meta-line">
+          <span class="mono-id">{{ solicitud.id }}</span>
+          <span>·</span>
+          <span>{{ solicitud.canal }}</span>
+          <span>·</span>
+          <span class="sla-badge" [ngClass]="'sla-' + sla.nivel">
+            {{ sla.texto }}
+          </span>
+        </div>
+        <h2>{{ solicitud.nombre }}</h2>
+        <p class="subtitle">{{ tituloModal }}</p>
+      </div>
+    </div>
+
+    <button type="button" class="close-btn" (click)="cerrar()" title="Cerrar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </header>
+
+  <!-- CUERPO DEL MODAL -->
+  <div class="dialog-body">
+    <!-- DATOS DE CONTACTO -->
+    <section class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Correo</span>
+        <span class="info-value">{{ solicitud.email }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Teléfono</span>
+        <span class="info-value">{{ solicitud.telefono || 'No registrado' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Clasificación</span>
+        <span
+          class="badge-tipo"
+          [class.badge-lead]="solicitud.cliente === 'Lead / Prospecto'"
+          [class.badge-existente]="solicitud.cliente === 'Cliente Existente'"
+        >
+          {{ solicitud.cliente }}
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Plazo máximo</span>
+        <span class="info-value">{{ solicitud.slaLimiteDias }} días ({{ solicitud.fechaRecepcion }})</span>
+      </div>
+    </section>
+
+    <!-- REQUERIMIENTO Y ACUSE NIVEL 1 -->
+    <section class="block-section">
+      <h3>Requerimiento recibido</h3>
+      <div class="message-box">{{ solicitud.mensaje }}</div>
+    </section>
+
+    <section class="block-section">
+      <h3 class="success-title">
+        <i class="fa-solid fa-circle-check"></i>
+        Respuesta automática Nivel 1 enviada
+      </h3>
+      <div class="auto-reply-box">{{ solicitud.autoRespuesta }}</div>
+    </section>
+
+    <!-- SECCIÓN ESPECÍFICA DE CV: FICHA + PREVISUALIZACIÓN PDF -->
+    @if (solicitud.categoria === 'CV' && solicitud.cv) {
+      <section class="block-section">
+        <div class="section-row">
+          <h3>Currículum Vitae adjunto</h3>
+          <span class="file-chip">
+            <i class="fa-solid fa-file-pdf"></i>
+            {{ solicitud.cv.archivo }}
+          </span>
+        </div>
+
+        <div class="cv-summary">
+          <div><strong>Perfil profesional:</strong> {{ solicitud.cv.profesion }}</div>
+          <div><strong>Experiencia:</strong> {{ solicitud.cv.experiencia }}</div>
+          <div><strong>Disponibilidad:</strong> {{ solicitud.cv.disponibilidad }}</div>
+        </div>
+
+        @if (pdfSafeUrl) {
+          <div class="pdf-viewer-wrapper">
+            <iframe
+              [src]="pdfSafeUrl"
+              title="Previsualización de CV"
+              class="pdf-frame"
+            ></iframe>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- SECCIÓN ESPECÍFICA DE CLIENTE: HISTORIAL COMPLETO -->
+    @if (solicitud.categoria === 'CLIENTE') {
+      <section class="block-section">
+        <h3>Historial de interacciones previas</h3>
+        @if (solicitud.historialPrevio.length > 0) {
+          <div class="timeline">
+            @for (item of solicitud.historialPrevio; track $index) {
+              <div class="timeline-item">
+                <div class="timeline-date">{{ item.fecha }}</div>
+                <div class="timeline-detail">{{ item.detalle }}</div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-history">
+            Sin interacciones previas registradas (primer contacto).
+          </div>
+        }
+      </section>
+    }
+
+    <!-- REDACCIÓN DE RESPUESTA OFICIAL (ESPECIALMENTE FORMACIÓN / TAMBIÉN DISPONIBLE PARA TODOS) -->
+    <section class="block-section reply-section">
+      <div class="section-row">
+        <h3>
+          @if (solicitud.categoria === 'FORMACION') {
+            Responder consulta de Formación
+          } @else if (solicitud.categoria === 'CV') {
+            Enviar respuesta / citación a candidato
+          } @else {
+            Registrar respuesta o seguimiento
+          }
+        </h3>
+        <code class="sender-code">Desde: {{ solicitud.remitente }}</code>
+      </div>
+
+      <textarea
+        [(ngModel)]="respuestaTexto"
+        rows="3"
+        placeholder="Escribe la respuesta oficial (al enviar se marcará como Atendido y se detendrá el contador)..."
+      ></textarea>
+
+      <div class="reply-actions">
+        @if (solicitud.estado !== 'Respondido' && solicitud.estado !== 'Cerrado') {
+          <button type="button" class="secondary-btn" (click)="marcarAtendido()">
+            Marcar como Atendido
+          </button>
+        }
+        <button type="button" class="primary-btn" (click)="enviarRespuesta()">
+          <i class="fa-solid fa-paper-plane"></i>
+          Enviar Respuesta Oficial
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER CON ESTADO Y RESPONSABLE -->
+  <footer class="dialog-footer">
+    <div class="footer-control">
+      <label>Estado:</label>
+      <select
+        [ngModel]="estadoSeleccionado"
+        (ngModelChange)="onEstadoChange($event)"
+      >
+        @for (est of estados; track est) {
+          <option [value]="est">{{ est }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="footer-control">
+      <label>Responsable:</label>
+      <select
+        [ngModel]="responsableSeleccionado"
+        (ngModelChange)="onResponsableChange($event)"
+      >
+        @for (resp of responsables; track resp) {
+          <option [value]="resp">{{ resp }}</option>
+        }
+      </select>
+    </div>
+  </footer>
+</div>

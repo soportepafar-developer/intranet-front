@@ -46,6 +46,13 @@
     </li>
 
     <li>
+      <a routerLink="/solicitudes" routerLinkActive="active" (click)="closeOnMobile()" [title]="isCollapsed ? 'Gestión de Solicitudes' : ''">
+        <i class="fa-solid fa-inbox"></i>
+        @if (!isCollapsed) { <span>Gestión de Solicitudes</span> }
+      </a>
+    </li>
+
+    <li>
       <a routerLink="/chat" routerLinkActive="active" (click)="closeOnMobile()" class="nav-item-chat" [title]="isCollapsed ? 'Chat' : ''">
         <i class="fa-solid fa-comments"></i>
         @if (!isCollapsed) {
