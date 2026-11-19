@@ -49,6 +49,16 @@
           </tr>
         </thead>
         <tbody>
+          @if (isLoading) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
+              <tr>
+                <td><span class="skeleton-bar" style="width: 170px; margin-bottom: 6px;"></span><span class="skeleton-bar sm"></span></td>
+                <td><span class="skeleton-bar pill" style="margin: 0 auto;"></span></td>
+                <td><span class="skeleton-bar pill" style="margin: 0 auto;"></span></td>
+                <td><span class="skeleton-bar" style="width: 90px; margin: 0 auto;"></span></td>
+              </tr>
+            }
+          } @else {
           @for (user of paginatedUsers; track user.id) {
             <tr>
               <td class="user-cell">
@@ -115,6 +125,7 @@
                 </div>
               </td>
             </tr>
+          }
           }
         </tbody>
       </table>

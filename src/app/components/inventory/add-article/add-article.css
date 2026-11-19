@@ -126,24 +126,23 @@
 }
 
 .add-category-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #f1f5f9;
-  color: #6366f1;
-  border: 1.5px solid #e2e8f0;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
   flex-shrink: 0;
 }
 
 .add-category-btn:hover {
-  background: #e2e8f0;
-  border-color: #6366f1;
-  transform: translateY(-1px);
+  background: var(--primary-light);
+  border-color: var(--primary-color);
 }
 
 .modern-input {
@@ -216,32 +215,31 @@
 }
 
 .action-btn.back {
-  background: #f1f5f9;
-  color: #64748b;
-  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
 }
 
 .action-btn.save {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #4338ca 100%);
+  background: var(--primary-color);
   color: white;
   border: none;
-  box-shadow: 0 4px 12px var(--primary-glow);
+  box-shadow: var(--shadow-xs);
 }
 
 .action-btn.save:disabled {
-  background: #cbd5e1;
+  background: var(--border-dark);
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .action-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .action-btn.save:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--primary-hover) 0%, #3730a3 100%);
-  box-shadow: 0 6px 16px var(--primary-glow);
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {

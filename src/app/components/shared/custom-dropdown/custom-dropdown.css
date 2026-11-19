@@ -24,8 +24,8 @@
 }
 
 .custom-btn:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-content {
@@ -37,10 +37,10 @@
 }
 
 .custom-btn:hover {
-  border-color: #6366f1;
-  background-color: white;
-  color: #1e293b;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.05);
+  border-color: var(--primary-color);
+  background-color: var(--bg-card);
+  color: var(--text-dark);
+  box-shadow: var(--shadow-xs);
 }
 
 .custom-menu {
@@ -74,8 +74,8 @@
 }
 
 .custom-checkbox.checked {
-  background-color: #6366f1;
-  border-color: #6366f1;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
 }
 
@@ -116,15 +116,15 @@
 }
 
 .custom-menu button:hover {
-  background-color: #f1f5f9;
-  color: #6366f1;
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
   padding-left: 1.2rem;
 }
 
 .arrow-icon {
   font-size: 0.8rem;
   transition: transform 0.3s ease;
-  color: #94a3b8;
+  color: var(--text-light);
 }
 
 .arrow-icon.rotated {
@@ -132,7 +132,7 @@
 }
 
 .custom-btn:hover .arrow-icon {
-  color: #6366f1;
+  color: var(--primary-color);
 }
 
 @media (max-width: 480px) {

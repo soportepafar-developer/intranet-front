@@ -30,6 +30,7 @@ export class Users implements OnInit, OnDestroy {
   totalUsers: number = 0;
   isSuperAdmin: boolean = false;
   isAdminUser: boolean = false;
+  isLoading: boolean = true;
   
   searchTerm: string = '';
   roleFilter: string = '';
@@ -80,6 +81,7 @@ export class Users implements OnInit, OnDestroy {
   }
 
   cargarUsuarios(): void {
+    this.isLoading = true;
     // Convertimos filtros de vista a valores esperados por API
     let apiRole = '';
     if (this.roleFilter === 'superadmin') apiRole = 'ROLE_SUPER_ADMIN';
@@ -106,9 +108,11 @@ export class Users implements OnInit, OnDestroy {
           cargo: 'Usuario',
           estado: (u.isActive === true || u.active === true || u.enabled === true || u.isActive === 1) ? 'Activo' : 'Inactivo'
         }));
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error al cargar usuarios', error);
+        this.isLoading = false;
       }
     );
   }

@@ -53,7 +53,7 @@
 }
 
 .chat-actions i.video-icon:hover {
-  color: #3240A5;
+  color: var(--primary-color);
 }
 
 .message-area {
@@ -136,7 +136,7 @@
 .message-sender {
   font-size: 0.8em;
   font-weight: 600;
-  color: #3240A5;
+  color: var(--primary-color);
   margin-bottom: 2px;
 }
 
@@ -145,7 +145,7 @@
 }
 
 .message-row.sent .message-content {
-  background-color: #3240A5;
+  background-color: var(--primary-color);
   color: white;
   border-bottom-right-radius: 2px;
 }
@@ -157,29 +157,29 @@
 .chat-input-area {
   display: flex;
   padding: 15px 20px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border-color);
   flex-shrink: 0;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .chat-input-area input {
   flex-grow: 1;
   padding: 10px 15px;
   border-radius: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   margin-right: 10px;
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: var(--bg-main);
+  color: var(--text-dark);
 }
 
 .chat-input-area input:focus {
   outline: none;
-  border-color: #3240A5;
-  box-shadow: 0 0 0 3px rgba(50, 64, 165, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-glow);
 }
 
 .send-btn {
-  background-color: #3240A5;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 50%;
@@ -189,10 +189,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background-color var(--transition-fast);
 }
 
 .send-btn:hover {
-  background-color: #2a3486;
+  background-color: var(--primary-hover);
 }
 
 /* Dropdown Styles */
@@ -340,26 +341,26 @@
 }
 
 .message-preview-container .message-content {
-  background-color: #3240A5;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 18px;
   border-bottom-right-radius: 2px;
   padding: 10px 15px;
   max-width: 80%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-xs);
 }
 
 .edit-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
   padding: 15px 20px;
 }
 
 .edit-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 25px;
   padding: 5px 10px;
   width: 100%;
@@ -370,14 +371,14 @@
   flex-grow: 1;
   background: transparent;
   border: none;
-  color: #1e293b;
+  color: var(--text-dark);
   font-size: 0.95rem;
   padding: 10px;
   outline: none;
 }
 
 .save-edit-btn {
-  background-color: #3240A5;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 50%;

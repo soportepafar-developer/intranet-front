@@ -376,15 +376,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color, #3240a5) 0%, #4338ca 100%);
+  background: var(--primary-color);
   color: white;
-  box-shadow: 0 4px 12px var(--primary-glow, rgba(50, 64, 165, 0.22));
+  box-shadow: var(--shadow-xs);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--primary-glow, rgba(50, 64, 165, 0.32));
-  background: linear-gradient(135deg, var(--primary-hover, #26338b) 0%, #3730a3 100%);
+  box-shadow: var(--shadow-sm);
+  background: var(--primary-hover);
 }
 
 .btn-primary:disabled {

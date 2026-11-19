@@ -1,8 +1,8 @@
 .calendar-container {
-  padding: 3.5rem 2rem 2rem 2rem;
-  background-color: #f4f6fa;
+  padding: 2.5rem 2rem 2rem 2rem;
+  background-color: var(--bg-main);
   height: 100vh;
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -69,25 +69,24 @@
 }
 
 .add-event-btn {
-  background: linear-gradient(135deg, var(--primary-color, #3240a5) 0%, #4338ca 100%);
+  background: var(--primary-color);
   color: white;
   border: none;
   height: 42px;
   padding: 0 1.25rem;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px var(--primary-glow, rgba(50, 64, 165, 0.22));
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-xs);
 }
 
 .add-event-btn:hover {
-  background: linear-gradient(135deg, var(--primary-hover, #26338b) 0%, #3730a3 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--primary-glow, rgba(50, 64, 165, 0.32));
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .calendar-controls {

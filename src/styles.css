@@ -1,55 +1,71 @@
 :root {
-  /* Colores Principales (Identidad UVI / Índigo Profundo) */
-  --primary-color: #3240a5;
-  --primary-hover: #26338b;
+  /* Colores Principales (Paleta Corporativa UVI) */
+  --primary-color: #233876;
+  --primary-hover: #1a2b5c;
   --primary-light: #eef2ff;
-  --primary-glow: rgba(50, 64, 165, 0.22);
-  --accent-color: #4f46e5;
-  --info-color: #3b82f6;
+  --primary-glow: rgba(35, 56, 118, 0.16);
+  --accent-color: #0f766e;
+  --accent-hover: #0d625b;
+  --accent-light: #f0fdfa;
+  --info-color: #1e40af;
+  --info-bg: #eff6ff;
+  --info-text: #1e40af;
+  --info-border: #bfdbfe;
 
   /* Colores Semánticos de Estado */
-  --danger-color: #ef4444;
-  --danger-hover: #dc2626;
+  --danger-color: #dc2626;
+  --danger-hover: #b91c1c;
   --danger-light: #fef2f2;
-  --success-color: #10b981;
-  --success-hover: #059669;
-  --success-light: #ecfdf5;
-  --warning-color: #f59e0b;
-  --warning-hover: #d97706;
-  --warning-light: #fffbeb;
+  --danger-bg: #fef2f2;
+  --danger-text: #991b1b;
+  --danger-border: #fecaca;
 
-  /* Escala Neutral Slate / Zinc para Fondos y Textos */
+  --success-color: #059669;
+  --success-hover: #047857;
+  --success-light: #ecfdf5;
+  --success-bg: #ecfdf5;
+  --success-text: #065f46;
+  --success-border: #a7f3d0;
+
+  --warning-color: #d97706;
+  --warning-hover: #b45309;
+  --warning-light: #fffbeb;
+  --warning-bg: #fffbeb;
+  --warning-text: #92400e;
+  --warning-border: #fde68a;
+
+  /* Escala Neutral Slate para Fondos y Textos */
   --text-dark: #0f172a;
-  --text-main: #1e293b;
+  --text-main: #334155;
   --text-muted: #64748b;
   --text-light: #94a3b8;
-  
+
   --bg-main: #f8fafc;
   --bg-secondary: #f1f5f9;
   --bg-card: #ffffff;
-  
-  /* Sidebar Moderno con profundidad Slate */
-  --sidebar-bg: #090e1d;
+
+  /* Sidebar Corporativo Slate Profundo */
+  --sidebar-bg: #0f172a;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-surface: rgba(255, 255, 255, 0.04);
-  --sidebar-hover: rgba(255, 255, 255, 0.08);
-  --sidebar-active: #3240A5;
-  --sidebar-active-glow: rgba(50, 64, 165, 0.35);
-  --sidebar-text: #94a3b8;
-  --sidebar-text-hover: #f8fafc;
-  
+  --sidebar-surface: #1e293b;
+  --sidebar-hover: rgba(255, 255, 255, 0.07);
+  --sidebar-active: #233876;
+  --sidebar-active-glow: rgba(35, 56, 118, 0.28);
+  --sidebar-text: #cbd5e1;
+  --sidebar-text-hover: #ffffff;
+
   /* Bordes y Sombras Suaves */
   --border-color: #e2e8f0;
   --border-subtle: #f1f5f9;
   --border-dark: #cbd5e1;
-  
+
   --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
   --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
-  --shadow-glow: 0 0 20px rgba(50, 64, 165, 0.2);
-  
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+  --shadow-glow: 0 0 0 3px var(--primary-light);
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -60,12 +76,116 @@
   --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+::selection {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
+  caret-color: var(--primary-color);
   font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   ENCABEZADOS Y TABLAS COMPARTIDAS (PAGE HEADER / BREADCRUMB / MODERN-TABLE)
+   ========================================================================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  min-height: 44px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.breadcrumb .root {
+  color: var(--primary-color);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.breadcrumb .separator {
+  color: var(--border-dark);
+  font-size: 0.9rem;
+}
+
+.breadcrumb .current {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+}
+
+.modern-table th {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.modern-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.84rem;
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   SKELETON LOADERS GLOBALES
+   ========================================================================== */
+.skeleton-bar {
+  display: block;
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-bar.sm {
+  height: 10px;
+  width: 60%;
+}
+
+.skeleton-bar.pill {
+  height: 22px;
+  width: 72px;
+  border-radius: var(--radius-full);
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Scrollbar estilizada global */
@@ -273,17 +393,17 @@ body {
 }
 
 .modal-actions .btn-cancel {
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
 }
 
 .modal-actions .btn-confirm {
-  background: #ef4444;
+  background: var(--danger-color);
   color: white;
 }
 
 .modal-actions .btn-success {
-  background: #3240A5;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -820,57 +940,59 @@ body {
 }
 
 .sla-verde {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 .sla-amarillo {
-  background: rgba(245, 158, 11, 0.16);
-  color: #b45309;
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-border);
 }
 
 .sla-rojo {
-  background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);
 }
 
 .sla-atendido {
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
 }
 
 .badge-tipo {
   display: inline-block;
   width: fit-content;
-  padding: 0.24rem 0.68rem;
-  border-radius: 24px;
-  font-size: 0.74rem;
+  padding: 0;
+  font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
-  background: #f1f5f9;
-  color: #475569;
+  background: transparent;
+  color: var(--text-main);
 }
 
 .badge-lead {
-  background: rgba(99, 102, 241, 0.1);
-  color: #6366f1;
+  background: transparent;
+  color: var(--primary-color);
 }
 
 .badge-existente {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background: transparent;
+  color: var(--accent-color);
 }
 
 .file-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: 8px;
-  background: #fef2f2;
-  color: #dc2626;
-  font-size: 0.76rem;
-  font-weight: 600;
+  padding: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .sender-code {

@@ -58,6 +58,7 @@ export class Articles implements OnInit, OnDestroy {
 
   public isAdmin: boolean = false;
   public mostrarEliminados: boolean = false;
+  public isLoading: boolean = true;
 
   public sortField: string = 'id';
   public sortOrder: 'ASC' | 'DESC' = 'DESC';
@@ -133,6 +134,7 @@ export class Articles implements OnInit, OnDestroy {
   }
 
   cargarArticulos(): void {
+    this.isLoading = true;
     this.articleService.getArticles(
       this.terminoBusqueda, 
       '', 
@@ -142,9 +144,15 @@ export class Articles implements OnInit, OnDestroy {
       this.empresaFilter,
       this.sortField,
       this.sortOrder
-    ).subscribe(response => {
-      this.articulosPaginados = Array.isArray(response) ? response : (response.data || []);
-      this.totalArticles = response.meta?.total_items !== undefined ? response.meta.total_items : (response.total !== undefined ? response.total : this.articulosPaginados.length);
+    ).subscribe({
+      next: (response) => {
+        this.articulosPaginados = Array.isArray(response) ? response : (response.data || []);
+        this.totalArticles = response.meta?.total_items !== undefined ? response.meta.total_items : (response.total !== undefined ? response.total : this.articulosPaginados.length);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
     });
   }
 

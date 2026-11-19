@@ -16,9 +16,10 @@
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 500px;
-  background: white;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
   z-index: 3001;
   overflow: hidden;
   display: flex;
@@ -32,18 +33,18 @@
 }
 
 .scanner-header {
-  padding: 1.5rem 2rem;
-  background: #f8fafc;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-main);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .scanner-header h3 {
   margin: 0;
-  font-size: 1.25rem;
-  color: #1e293b;
+  font-size: 1.15rem;
+  color: var(--text-dark);
   font-weight: 700;
 }
 
@@ -51,43 +52,42 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #94a3b8;
+  color: var(--text-light);
   cursor: pointer;
-  padding: 0.5rem;
-  transition: all 0.2s;
+  padding: 0.4rem;
+  transition: color var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .close-btn:hover {
-  color: #ef4444;
-  transform: rotate(90deg);
+  color: var(--danger-color);
 }
 
 .scanner-body {
-  padding: 2rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 #reader {
   width: 100%;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  border: 2px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   background: #000;
 }
 
 /* Customize html5-qrcode UI */
 ::ng-deep #reader__dashboard_section_csr button {
-  background: #4338ca !important;
+  background: var(--primary-color) !important;
   color: white !important;
   border: none !important;
   padding: 0.6rem 1.2rem !important;
-  border-radius: 8px !important;
+  border-radius: var(--radius-sm) !important;
   font-weight: 600 !important;
   cursor: pointer !important;
   margin: 0.5rem !important;
@@ -95,38 +95,38 @@
 
 ::ng-deep #reader__status_span {
   font-size: 0.9rem !important;
-  color: #64748b !important;
+  color: var(--text-muted) !important;
 }
 
 .scanner-hint {
-  color: #64748b;
-  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
   text-align: center;
   margin: 0;
 }
 
 .scanner-footer {
-  padding: 1.5rem 2rem;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-main);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: center;
 }
 
 .cancel-btn {
-  background: #f1f5f9;
-  color: #64748b;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 10px;
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.7rem 1.75rem;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .cancel-btn:hover {
-  background: #e2e8f0;
-  color: #1e293b;
+  background: var(--border-color);
+  color: var(--text-dark);
 }
 
 @media (max-width: 480px) {
